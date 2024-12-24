@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { sendOrder, closeOrderModal } from '../../slices/orderSlice';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
@@ -9,7 +9,7 @@ export const BurgerConstructor: FC = () => {
   const dispatch = useAppDispatch();
 
   const { bun, ingredients = [] } = useSelector(
-    (state: RootState) => state.constructor
+    (state: RootState) => state.burgerConstructor
   );
 
   const { loading: orderRequest, modalData: orderModalData } = useSelector(

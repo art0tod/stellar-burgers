@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 
 interface ConstructorState {
-  bun: TConstructorIngredient | null;
+  bun: TIngredient | null;
   ingredients: TConstructorIngredient[];
 }
 
@@ -11,11 +11,11 @@ const initialState: ConstructorState = {
   ingredients: []
 };
 
-const constructorSlice = createSlice({
+const burgerConstructorSlice = createSlice({
   name: 'constructor',
   initialState,
   reducers: {
-    setBun(state, action: PayloadAction<TConstructorIngredient>) {
+    setBun(state, action: PayloadAction<TIngredient>) {
       state.bun = action.payload;
     },
     addIngredient(state, action: PayloadAction<TConstructorIngredient>) {
@@ -49,5 +49,6 @@ export const {
   removeIngredient,
   moveIngredient,
   resetConstructor
-} = constructorSlice.actions;
-export default constructorSlice.reducer;
+} = burgerConstructorSlice.actions;
+
+export default burgerConstructorSlice.reducer;

@@ -12,6 +12,8 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production'
 });
 
+console.log('Initial Redux State:', store.getState());
+
 export type RootState = ReturnType<typeof rootReducer>;
 
 export type AppDispatch = typeof store.dispatch;
