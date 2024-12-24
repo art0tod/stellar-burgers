@@ -13,52 +13,65 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
-const App = () => (
-  <div className={styles.app}>
-    <AppHeader />
-    <Routes>
-      <Route path='/' element={<ConstructorPage />} />
+const App = () => {
+  const navigate = useNavigate();
 
-      <Route path='/feed' element={<Feed />} />
+  const handleModalClose = () => {
+    navigate(-1);
+  };
 
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-      <Route path='/forgot-password' element={<ForgotPassword />} />
-      <Route path='/reset-password' element={<ResetPassword />} />
+  return (
+    <div className={styles.app}>
+      <AppHeader />
+      <Routes>
+        <Route path='/' element={<ConstructorPage />} />
 
-      <Route path='/profile' element={<Profile />} />
-      <Route path='/profile/orders' element={<ProfileOrders />} />
+        <Route path='/feed' element={<Feed />} />
 
-      <Route
-        path='/feed/:number'
-        element={
-          <Modal title='Order Info' onClose={() => {}}>
-            <OrderInfo />
-          </Modal>
-        }
-      />
-      <Route
-        path='/ingredients/:id'
-        element={
-          <Modal title='' onClose={() => {}}>
-            <IngredientDetails />
-          </Modal>
-        }
-      />
-      <Route
-        path='/profile/orders/:number'
-        element={
-          <Modal title='' onClose={() => {}}>
-            <OrderInfo />
-          </Modal>
-        }
-      />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
 
-      <Route path='*' element={<NotFound404 />} />
-    </Routes>
-  </div>
-);
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/profile/orders' element={<ProfileOrders />} />
+
+        <Route
+          path='/feed/:number'
+          element={
+            <Modal title='Order Info' onClose={() => {}}>
+              <OrderInfo />
+            </Modal>
+          }
+        />
+        <Route
+          path='/ingredients/:id'
+          element={
+            <Modal
+              title='Детали ингридиента'
+              onClose={() => {
+                handleModalClose();
+              }}
+            >
+              <IngredientDetails />
+            </Modal>
+          }
+        />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <Modal title='' onClose={() => {}}>
+              <OrderInfo />
+            </Modal>
+          }
+        />
+
+        <Route path='*' element={<NotFound404 />} />
+      </Routes>
+    </div>
+  );
+};
 
 export default App;
