@@ -51,4 +51,6 @@ export const {
   resetConstructor
 } = burgerConstructorSlice.actions;
 
+export const validateConstructor = (state: ConstructorState): boolean =>
+  !!state.bun && state.ingredients.length > 0;
 export default burgerConstructorSlice.reducer;

@@ -1,19 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUserApi, registerUserApi, logoutApi, getUserApi } from '@api';
+import {
+  loginUserApi,
+  registerUserApi,
+  logoutApi,
+  getUserApi,
+  updateUserApi
+} from '@api';
 import { TUser } from '@utils-types';
+import { getCookie, setCookie } from '../utils/cookie';
 
 interface AuthState {
   user: TUser | null;
   isLoggedIn: boolean;
   loading: boolean;
   error: string | null;
+  isAuthChecked: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   isLoggedIn: false,
   loading: false,
-  error: null
+  error: null,
+  isAuthChecked: false
 };
 
 export const login = createAsyncThunk(
@@ -21,6 +30,8 @@ export const login = createAsyncThunk(
   async (data: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await loginUserApi(data);
+      setCookie('accessToken', response.accessToken, { expires: 3600 });
+      localStorage.setItem('refreshToken', response.refreshToken);
       return response.user;
     } catch (error: any) {
       return rejectWithValue(error.massega || 'Ошибка авторизации');
@@ -31,7 +42,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (
-    data: { email: string; password: string; name: string },
+    data: { email: string; name: string; password: string },
     { rejectWithValue }
   ) => {
     try {
@@ -43,12 +54,26 @@ export const register = createAsyncThunk(
   }
 );
 
+export const checkAuth = createAsyncThunk(
+  'auth/checkAuth',
+  async (_, { dispatch }) => {
+    const token = getCookie('accessToken');
+    if (token) {
+      try {
+        await dispatch(fetchUser()).unwrap();
+      } catch (error) {
+        console.error('Проверка авторизации не удалась:', error);
+      }
+    }
+  }
+);
+
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       await logoutApi();
-      return true; // Возвращаем успех
+      return true;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Ошибка выхода');
     }
@@ -64,6 +89,23 @@ export const fetchUser = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.message || 'Ошибка получения данных пользователя'
+      );
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  'auth/updateUser',
+  async (
+    data: { name: string; email: string; password?: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateUserApi(data);
+      return response.user;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.message || 'Ошибка обновления данных пользователя'
       );
     }
   }
@@ -112,9 +154,9 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(logout.fulfilled, (state, action) => {
+      .addCase(logout.fulfilled, (state) => {
         state.loading = false;
-        state.isLoggedIn = true;
+        state.isLoggedIn = false;
         state.user = null;
       })
       .addCase(logout.rejected, (state, action) => {
@@ -134,6 +176,12 @@ const authSlice = createSlice({
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(checkAuth.fulfilled, (state) => {
+        state.isAuthChecked = true;
+      })
+      .addCase(checkAuth.rejected, (state) => {
+        state.isAuthChecked = true;
       });
   }
 });

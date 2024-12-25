@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { sendOrder, closeOrderModal } from '../../slices/orderSlice';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
@@ -7,6 +8,8 @@ import { RootState, useAppDispatch } from '../../services/store';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   const { bun, ingredients = [] } = useSelector(
     (state: RootState) => state.burgerConstructor
@@ -27,6 +30,11 @@ export const BurgerConstructor: FC = () => {
   }, [bun, ingredients]);
 
   const onOrderClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login', { state: { from: '/' } });
+      return;
+    }
+
     if (!bun || orderRequest) return;
 
     const ingredientIds = [
