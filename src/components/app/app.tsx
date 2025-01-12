@@ -39,15 +39,23 @@ const App = () => {
     validateConstructor(state.burgerConstructor)
   );
 
+  const isIngredientsLoading = useSelector(
+    (state: RootState) => state.ingredients.loading
+  );
+
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!constructorValid && location.pathname === '/') {
+    if (
+      !isIngredientsLoading &&
+      !constructorValid &&
+      location.pathname === '/'
+    ) {
       navigate('/');
     }
-  }, [constructorValid, navigate]);
+  }, [constructorValid, isIngredientsLoading, navigate]);
 
   if (!isAuthChecked) {
     return <div>Загрузка...</div>;

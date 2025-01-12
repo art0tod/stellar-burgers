@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { orderBurgerApi } from '../utils/burger-api';
+import { getOrdersApi, orderBurgerApi } from '../utils/burger-api';
 import { TOrder } from '@utils-types';
 
 interface IOrderState {
   loading: boolean;
   modalData: TOrder | null;
   error: string | null;
+  userOrders: TOrder[];
 }
 
 const initialState: IOrderState = {
   loading: false,
   modalData: null,
-  error: null
+  error: null,
+  userOrders: []
 };
 
 export const sendOrder = createAsyncThunk<
@@ -24,6 +26,19 @@ export const sendOrder = createAsyncThunk<
     return response.order;
   } catch (error: any) {
     return rejectWithValue(error.message || 'Ошибка оформления заказа');
+  }
+});
+
+export const fetchUserOrders = createAsyncThunk<
+  TOrder[],
+  void,
+  { rejectValue: string }
+>('order/fetchUserOrders', async (_, { rejectWithValue }) => {
+  try {
+    const response = await getOrdersApi();
+    return response;
+  } catch (error: any) {
+    return rejectWithValue(error.message || 'Ошибка получения заказов');
   }
 });
 
@@ -48,6 +63,18 @@ const orderSlice = createSlice({
       .addCase(sendOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Неизвестная ошибка';
+      })
+      .addCase(fetchUserOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userOrders = action.payload;
+      })
+      .addCase(fetchUserOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Ошибка загрузки заказов';
       });
   }
 });

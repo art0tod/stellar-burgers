@@ -18,8 +18,7 @@ export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
   async (_, { rejectWithValue }) => {
     try {
-      const data = await getIngredientsApi();
-      return data;
+      return await getIngredientsApi();
     } catch (error: any) {
       return rejectWithValue(error.message || 'Ошибка загрузки ингредиентов');
     }

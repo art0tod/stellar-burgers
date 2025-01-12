@@ -49,10 +49,6 @@ export const BurgerIngredients: FC = () => {
     } else if (inViewFilling) setCurrentTab('main');
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
     if (tab === 'bun')

@@ -47,9 +47,11 @@ export const register = createAsyncThunk(
   ) => {
     try {
       const response = await registerUserApi(data);
+      setCookie('accessToken', response.accessToken, { expires: 3600 });
+      localStorage.setItem('refreshToken', response.refreshToken);
       return response.user;
     } catch (error: any) {
-      return rejectWithValue(error.massega || 'Ошибка регистрации');
+      return rejectWithValue(error.message || 'Ошибка регистрации');
     }
   }
 );
