@@ -51,6 +51,17 @@ export const {
   resetConstructor
 } = burgerConstructorSlice.actions;
 
+export const getIngredientCount = (
+  state: ConstructorState,
+  ingredientId: string
+): number => {
+  if (state.bun && state.bun._id === ingredientId) {
+    return 2;
+  }
+  return state.ingredients.filter((item) => item._id === ingredientId).length;
+};
+
 export const validateConstructor = (state: ConstructorState): boolean =>
   !!state.bun && state.ingredients.length > 0;
+
 export default burgerConstructorSlice.reducer;

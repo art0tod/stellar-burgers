@@ -11,7 +11,6 @@ export const ProfileOrders: FC = () => {
   const { userOrders, loading, error } = useSelector(
     (state: RootState) => state.order
   );
-  console.log({ userOrders, loading, error });
 
   useEffect(() => {
     dispatch(fetchUserOrders());

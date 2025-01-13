@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../services/store';
 import { validateConstructor } from '../../slices/burgerConstructorSlice';
 import { checkAuth } from '../../slices/authSlice';
+import { Preloader } from '@ui';
 
 const App = () => {
   const navigate = useNavigate();
@@ -57,9 +58,9 @@ const App = () => {
     }
   }, [constructorValid, isIngredientsLoading, navigate]);
 
-  if (!isAuthChecked) {
-    return <div>Загрузка...</div>;
-  }
+  // if (!isAuthChecked) {
+  //   return <Preloader />;
+  // }
 
   return (
     <div className={styles.app}>
@@ -118,30 +119,16 @@ const App = () => {
           }
         />
 
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal title='Order Info' onClose={() => {}}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route
           path='/ingredients/:id'
           element={
-            <Modal title='Детали ингридиента' onClose={handleModalClose}>
+            <p className={styles.detailPageWrap}>
               <IngredientDetails />
-            </Modal>
+            </p>
           }
         />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <Modal title='' onClose={() => {}}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
+        <Route path='/profile/orders/:number' element={<OrderInfo />} />
 
         <Route path='*' element={<NotFound404 />} />
       </Routes>
