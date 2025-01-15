@@ -2,7 +2,7 @@ import { FC, useEffect } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from '../../services/store';
 import { RootState, useAppDispatch } from '../../services/store';
 import { fetchIngredients } from '../../slices/ingredientsSlice';
 

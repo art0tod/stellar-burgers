@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 import { useAppDispatch, RootState } from '../../services/store';
 import { fetchUserOrders } from '../../slices/orderSlice';
 import { Preloader } from '@ui';

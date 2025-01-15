@@ -16,7 +16,7 @@ import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route/';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 import { RootState, useAppDispatch } from '../../services/store';
 import { validateConstructor } from '../../slices/burgerConstructorSlice';
 import { checkAuth } from '../../slices/authSlice';
