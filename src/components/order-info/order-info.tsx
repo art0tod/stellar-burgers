@@ -1,23 +1,42 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from '../../services/store';
+import { fetchFeeds } from '../../slices/feedSlice';
+import { fetchIngredients } from '../../slices/ingredientsSlice';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams<{ number: string }>();
+  const dispatch = useDispatch();
 
-  const ingredients: TIngredient[] = [];
+  const {
+    orders,
+    loading: feedsLoading,
+    error: feedsError
+  } = useSelector((state) => state.feed);
 
-  /* Готовим данные для отображения */
+  const {
+    items: ingredients,
+    loading: ingredientsLoading,
+    error: ingredientsError
+  } = useSelector((state) => state.ingredients);
+
+  useEffect(() => {
+    if (!orders.length) {
+      dispatch(fetchFeeds());
+    }
+    if (!ingredients.length) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, orders.length, ingredients.length]);
+
+  const orderData = useMemo(
+    () => orders.find((order) => order.number === Number(number)),
+    [orders, number]
+  );
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -59,8 +78,20 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (feedsLoading || ingredientsLoading) {
     return <Preloader />;
+  }
+
+  if (feedsError || ingredientsError) {
+    return (
+      <div className='error-message'>
+        Ошибка загрузки данных: {feedsError || ingredientsError}
+      </div>
+    );
+  }
+
+  if (!orderInfo) {
+    return <div className='error-message'>Заказ не найден.</div>;
   }
 
   return <OrderInfoUI orderInfo={orderInfo} />;
