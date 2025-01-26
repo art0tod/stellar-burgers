@@ -58,10 +58,6 @@ const App = () => {
     }
   }, [constructorValid, isIngredientsLoading, navigate]);
 
-  // if (!isAuthChecked) {
-  //   return <Preloader />;
-  // }
-
   return (
     <div className={styles.app}>
       <AppHeader />
