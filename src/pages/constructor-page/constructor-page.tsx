@@ -19,7 +19,6 @@ export const ConstructorPage: FC = () => {
   } = useSelector((state: RootState) => state.ingredients);
 
   useEffect(() => {
-    // Загружаем ингредиенты только если их нет
     if (!items.length) {
       dispatch(fetchIngredients());
     }

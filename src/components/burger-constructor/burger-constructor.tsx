@@ -5,6 +5,7 @@ import { sendOrder, closeOrderModal } from '../../slices/orderSlice';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { RootState, useAppDispatch } from '../../services/store';
+import { resetConstructor } from '../../slices/burgerConstructorSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useAppDispatch();
@@ -43,7 +44,12 @@ export const BurgerConstructor: FC = () => {
       bun._id
     ];
 
-    dispatch(sendOrder(ingredientIds));
+    try {
+      dispatch(sendOrder(ingredientIds)).unwrap();
+      dispatch(resetConstructor());
+    } catch (error) {
+      console.error('Order failed:', error);
+    }
   };
 
   const handleCloseOrderModal = () => {

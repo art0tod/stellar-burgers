@@ -9,7 +9,7 @@ interface IOrderState {
   userOrders: TOrder[];
 }
 
-const initialState: IOrderState = {
+export const initialState: IOrderState = {
   loading: false,
   modalData: null,
   error: null,

@@ -5,7 +5,7 @@ import {
   logoutApi,
   getUserApi,
   updateUserApi
-} from '@api';
+} from '../utils/burger-api';
 import { TUser } from '@utils-types';
 import { getCookie, setCookie } from '../utils/cookie';
 
@@ -17,7 +17,7 @@ interface AuthState {
   isAuthChecked: boolean;
 }
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
   user: null,
   isLoggedIn: false,
   loading: false,
@@ -184,6 +184,19 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.rejected, (state) => {
         state.isAuthChecked = true;
+      })
+      // Update
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   }
 });
